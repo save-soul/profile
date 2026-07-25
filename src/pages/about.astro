@@ -1,0 +1,18 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { Content as ZhContent } from '../content/about/zh.md';
+import { Content as EnContent } from '../content/about/en.md';
+---
+
+<BaseLayout title="关于" description="关于作者：简历、技能与联系方式。" active="about" ogImage="/og-about.png">
+  <div class="page-head">
+    <h1><span class="zh">关于</span><span class="en">About</span></h1>
+    <p class="subtitle">
+      <span class="zh">作者简历。</span>
+      <span class="en">The author's résumé.</span>
+    </p>
+  </div>
+
+  <div class="prose zh"><ZhContent /></div>
+  <div class="prose en"><EnContent /></div>
+</BaseLayout>

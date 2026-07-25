@@ -1,0 +1,104 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { works } from '../data/works';
+
+import { timeline } from '../data/timeline';
+import { site } from '../data/site';
+
+// 取最新 4 条历程
+const latestTimeline = timeline.slice(0, 4);
+
+const latestWorks = works.slice(0, 4);
+---
+
+<BaseLayout title="首页" description="作品、阅读、相册与历程。" active="home" ogImage="/og-index.png">
+  <section class="hero">
+    <p class="eyebrow">
+      <span class="zh">个人主页</span><span class="en">Personal Homepage</span>
+    </p>
+    <h1>
+      <span class="zh">你好，欢迎来到<br />我的小站。</span>
+      <span class="en">Hello, welcome to<br />my little corner.</span>
+    </h1>
+    <p class="byline">
+      <span class="zh">WithZeal · 怀着热忱</span>
+      <span class="en">WithZeal · Driven by zeal</span>
+    </p>
+    <p class="intro">
+      <span class="zh">
+        我在这里记录作品、书单、照片与日常思考。极简、黑白、留白 ——
+        希望你在这里能慢下来。
+      </span>
+      <span class="en">
+        This is where I keep my works, reading list, photos and everyday
+        thoughts. Minimal, monochrome, spacious — I hope it slows you down a
+        little.
+      </span>
+    </p>
+    <div class="hero-links">
+      <a href="/about/"><span class="zh">了解我 →</span><span class="en">About me →</span></a>
+      <a href="/now/"><span class="zh">我在做什么 →</span><span class="en">What I'm doing →</span></a>
+      <a href={`mailto:${site.email}`}>
+        <span class="zh">邮箱</span><span class="en">Email</span>
+      </a>
+      <a href={site.github} target="_blank" rel="noopener">
+        <span class="zh">GitHub</span><span class="en">GitHub</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="home-section">
+    <div class="sec-head">
+      <h2><span class="zh">最近记录</span><span class="en">Recent Notes</span></h2>
+      <a href="/notes/"><span class="zh">全部 →</span><span class="en">All →</span></a>
+    </div>
+    <ul class="item-list">
+      {
+        latestTimeline.map((item) => (
+          <li class="item">
+            <div class="item-title">
+              <span>
+                <span class="zh">{item.zh}</span>
+                <span class="en">{item.en}</span>
+              </span>
+              <span class="item-meta">{item.date}</span>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="home-section">
+    <div class="sec-head">
+      <h2><span class="zh">精选作品</span><span class="en">Selected Works</span></h2>
+      <a href="/works/"><span class="zh">全部 →</span><span class="en">All →</span></a>
+    </div>
+    <ul class="item-list">
+      {
+        latestWorks.map((work) => (
+          <li class="item">
+            <div class="item-title">
+            {work.link ? (
+              <a href={work.link} target="_blank" rel="noopener noreferrer">
+                  <span class="zh">{work.zhTitle}</span>
+                  <span class="en">{work.enTitle}</span>
+                </a>
+              ) : (
+                <span>
+                  <span class="zh">{work.zhTitle}</span>
+                  <span class="en">{work.enTitle}</span>
+                </span>
+              )}
+              <span class="item-meta">{work.year}</span>
+            </div>
+            <p class="item-desc">
+              <span class="zh">{work.zhDesc}</span>
+              <span class="en">{work.enDesc}</span>
+            </p>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</BaseLayout>

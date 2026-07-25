@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { Content as ZhContent } from '../content/now/zh.md';
+import { Content as EnContent } from '../content/now/en.md';
+
+// 构建时间：静态站 astro build 时渲染一次即冻结为最后构建时间；
+// dev 模式下为页面渲染时的当前时间。
+const updated = new Date();
+const updatedZh = `${updated.getFullYear()} 年 ${updated.getMonth() + 1} 月 ${updated.getDate()} 日`;
+const updatedEn = updated.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+});
+---
+
+<BaseLayout title="现在" description="此刻我把时间花在哪里。" active="now" ogImage="/og-now.png">
+  <div class="page-head">
+    <h1><span class="zh">现在</span><span class="en">Now</span></h1>
+    <p class="subtitle">
+      <span class="zh">此刻我把时间花在哪里。</span>
+      <span class="en">Where my time goes right now.</span>
+    </p>
+  </div>
+
+  <div class="prose zh"><ZhContent /></div>
+  <div class="prose en"><EnContent /></div>
+
+  <p class="updated-at">
+    <span class="zh">最后更新：{updatedZh}</span>
+    <span class="en">Last updated: {updatedEn}</span>
+  </p>
+</BaseLayout>

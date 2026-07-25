@@ -1,0 +1,61 @@
+.workbuddy/
+# 依赖
+node_modules
+.bun
+bun.lockb
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Astro 构建产物
+dist
+.astro
+astro.config.*.ts.timestamp
+
+# 环境变量
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+
+# 缓存
+.npm
+.eslintcache
+.vite
+.vercel
+.netlify
+turbo
+.turbo
+
+# 操作系统
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE 编辑器
+.idea
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/tasks.json
+!.vscode/launch.json
+*.swp
+*.swo
+*.sublime-*
+
+# 日志
+logs
+*.log
+npm-debug.log*
+bun-debug.log*
+
+# 临时文件
+tmp
+temp
+*.tmp
+.cache
+
+# 类型/测试
+coverage
+*.tsbuildinfo

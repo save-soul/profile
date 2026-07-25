@@ -1,0 +1,139 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { photos } from '../data/photos';
+---
+
+<BaseLayout title="相册" description="一些片刻，悬停查看详情，点击放大。" active="photos" ogImage="/og-photos.png">
+  <div class="page-head">
+    <h1><span class="zh">相册</span><span class="en">Photos</span></h1>
+    <p class="subtitle">
+      <span class="zh">一些片刻。悬停查看详情，点击放大。</span>
+      <span class="en">Some moments. Hover for details, click to enlarge.</span>
+    </p>
+  </div>
+
+  <div class="photo-grid">
+    {
+      photos.map((photo) => (
+        <figure
+          class="photo-card"
+          data-src={photo.src}
+          data-zh={photo.zh}
+          data-en={photo.en}
+          data-zhdesc={photo.zhDesc ?? ''}
+          data-endesc={photo.enDesc ?? ''}
+          data-date={photo.date ?? ''}
+          tabindex="0"
+          role="button"
+          aria-label={photo.zh}
+        >
+          <img src={photo.src} alt={photo.zh} loading="lazy" />
+          <div class="photo-overlay">
+            <p class="overlay-title">
+              <span class="zh">{photo.zh}</span>
+              <span class="en">{photo.en}</span>
+            </p>
+            {photo.zhDesc && (
+              <p class="overlay-desc">
+                <span class="zh">{photo.zhDesc}</span>
+                <span class="en">{photo.enDesc}</span>
+              </p>
+            )}
+            {photo.date && <p class="overlay-date">{photo.date}</p>}
+          </div>
+        </figure>
+      ))
+    }
+  </div>
+
+  <!-- 点击放大 lightbox -->
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <button class="lightbox-close" id="lightbox-close" aria-label="关闭 / Close">×</button>
+    <button class="lightbox-nav lightbox-prev" id="lb-prev" aria-label="上一张 / Previous">‹</button>
+    <button class="lightbox-nav lightbox-next" id="lb-next" aria-label="下一张 / Next">›</button>
+    <figure class="lightbox-inner">
+      <img id="lb-img" src="" alt="" />
+      <figcaption class="lightbox-caption">
+        <p class="lb-title">
+          <span class="zh" id="lb-title-zh"></span>
+          <span class="en" id="lb-title-en"></span>
+        </p>
+        <p class="lb-desc">
+          <span class="zh" id="lb-desc-zh"></span>
+          <span class="en" id="lb-desc-en"></span>
+        </p>
+        <p class="lb-date" id="lb-date"></p>
+      </figcaption>
+    </figure>
+  </div>
+</BaseLayout>
+
+<script is:inline>
+  (function () {
+    var lb = document.getElementById('lightbox');
+    if (!lb) return;
+    var lbImg = document.getElementById('lb-img');
+    var tZh = document.getElementById('lb-title-zh');
+    var tEn = document.getElementById('lb-title-en');
+    var dZh = document.getElementById('lb-desc-zh');
+    var dEn = document.getElementById('lb-desc-en');
+    var lbDate = document.getElementById('lb-date');
+
+    var cards = Array.prototype.slice.call(document.querySelectorAll('.photo-card'));
+    var current = 0;
+
+    function render(i) {
+      var card = cards[i];
+      if (!card) return;
+      lbImg.src = card.getAttribute('data-src') || '';
+      lbImg.alt = card.getAttribute('data-zh') || '';
+      tZh.textContent = card.getAttribute('data-zh') || '';
+      tEn.textContent = card.getAttribute('data-en') || '';
+      dZh.textContent = card.getAttribute('data-zhdesc') || '';
+      dEn.textContent = card.getAttribute('data-endesc') || '';
+      lbDate.textContent = card.getAttribute('data-date') || '';
+    }
+    function open(card) {
+      current = cards.indexOf(card);
+      if (current < 0) current = 0;
+      render(current);
+      lb.classList.add('open');
+      lb.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+    function close() {
+      lb.classList.remove('open');
+      lb.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+    function prev() {
+      current = (current - 1 + cards.length) % cards.length;
+      render(current);
+    }
+    function next() {
+      current = (current + 1) % cards.length;
+      render(current);
+    }
+
+    cards.forEach(function (card) {
+      card.addEventListener('click', function () { open(card); });
+      card.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          open(card);
+        }
+      });
+    });
+
+    document.getElementById('lightbox-close').addEventListener('click', close);
+    document.getElementById('lb-prev').addEventListener('click', function (e) { e.stopPropagation(); prev(); });
+    document.getElementById('lb-next').addEventListener('click', function (e) { e.stopPropagation(); next(); });
+    lb.addEventListener('click', function (e) { if (e.target === lb) close(); });
+    document.addEventListener('keydown', function (e) {
+      if (!lb.classList.contains('open')) return;
+      if (e.key === 'Escape') close();
+      else if (e.key === 'ArrowLeft') prev();
+      else if (e.key === 'ArrowRight') next();
+    });
+  })();
+</script>

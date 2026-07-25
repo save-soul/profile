@@ -1,0 +1,53 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { books, statusLabel } from '../data/books';
+
+const order = { reading: 0, finished: 1, wishlist: 2 } as const;
+const sorted = [...books].sort((a, b) => order[a.status] - order[b.status]);
+---
+
+<BaseLayout title="阅读书单" description="在读、读完与想读的书。" active="reading" ogImage="/og-reading.png">
+  <div class="page-head">
+    <h1><span class="zh">阅读书单</span><span class="en">Reading List</span></h1>
+    <p class="subtitle">
+      <span class="zh">在读、读完与想读的书。</span>
+      <span class="en">Books I'm reading, have finished, or want to read.</span>
+    </p>
+  </div>
+
+  <ul class="item-list">
+    {
+      sorted.map((book) => (
+        <li class="item">
+          <div class="item-title">
+            {book.link ? (
+              <a href={book.link} target="_blank" rel="noopener noreferrer">
+                <span class="zh">《{book.zhTitle}》</span>
+                <span class="en">{book.enTitle}</span>
+              </a>
+            ) : (
+              <span>
+                <span class="zh">《{book.zhTitle}》</span>
+                <span class="en">{book.enTitle}</span>
+              </span>
+            )}
+            <span class="item-meta">{book.author}</span>
+          </div>
+          <p class="item-tags">
+            <span class="tag">
+              <span class="zh">{statusLabel[book.status].zh}</span>
+              <span class="en">{statusLabel[book.status].en}</span>
+            </span>
+            {book.year && <span class="item-meta">{book.year}</span>}
+          </p>
+          {(book.zhNote || book.enNote) && (
+            <p class="item-desc">
+              <span class="zh">{book.zhNote}</span>
+              <span class="en">{book.enNote}</span>
+            </p>
+          )}
+        </li>
+      ))
+    }
+  </ul>
+</BaseLayout>

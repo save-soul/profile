@@ -1,0 +1,92 @@
+---
+import { navLinks } from '../data/nav';
+import { site } from '../data/site';
+
+interface Props {
+  active?: string;
+}
+const { active = '' } = Astro.props;
+---
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="/" class="site-logo">
+      <span class="zh">{site.name}</span><span class="en">{site.nameEn}</span>
+    </a>
+    <div class="nav-wrap">
+      <nav class="site-nav" id="site-nav" aria-label="主导航">
+        {
+          navLinks.map((link) => (
+            <a
+              href={link.href}
+              class={active === link.key ? 'active' : ''}
+              {...(link.external
+                ? { target: '_blank', rel: 'noopener noreferrer' }
+                : {})}
+            >
+              <span class="zh">{link.zh}</span>
+              <span class="en">{link.en}</span>
+              {link.external && (
+                <span class="ext" aria-hidden="true">
+                  ↗
+                </span>
+              )}
+            </a>
+          ))
+        }
+      </nav>
+      <button class="lang-toggle" id="lang-toggle" aria-label="切换语言 / Switch language">
+        <span class="zh">EN</span><span class="en">中文</span>
+      </button>
+      <button
+        class="menu-toggle"
+        id="menu-toggle"
+        aria-label="菜单 / Menu"
+        aria-expanded="false"
+        aria-controls="site-nav"
+      >
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<script is:inline>
+  (function () {
+    /* 语言切换 */
+    var langBtn = document.getElementById('lang-toggle');
+    if (langBtn) {
+      langBtn.addEventListener('click', function () {
+        var html = document.documentElement;
+        var next = html.getAttribute('data-lang') === 'zh' ? 'en' : 'zh';
+        html.setAttribute('data-lang', next);
+        html.setAttribute('lang', next === 'zh' ? 'zh-CN' : 'en');
+        try {
+          localStorage.setItem('site-lang', next);
+        } catch (e) {}
+      });
+    }
+
+    /* 移动端汉堡菜单 */
+    var menuBtn = document.getElementById('menu-toggle');
+    var nav = document.getElementById('site-nav');
+    if (menuBtn && nav) {
+      var setOpen = function (open) {
+        nav.classList.toggle('open', open);
+        menuBtn.classList.toggle('open', open);
+        menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      };
+      menuBtn.addEventListener('click', function () {
+        setOpen(!nav.classList.contains('open'));
+      });
+      /* 点击任一链接后收起菜单 */
+      nav.querySelectorAll('a').forEach(function (a) {
+        a.addEventListener('click', function () {
+          setOpen(false);
+        });
+      });
+    }
+  })();
+</script>

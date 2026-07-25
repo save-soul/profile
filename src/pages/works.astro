@@ -1,0 +1,46 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { works } from '../data/works';
+---
+
+<BaseLayout title="作品" description="做过的一些小东西，大多源于自己的需求。" active="works" ogImage="/og-works.png">
+  <div class="page-head">
+    <h1><span class="zh">作品</span><span class="en">Works</span></h1>
+    <p class="subtitle">
+      <span class="zh">做过的一些小东西，大多源于自己的需求。</span>
+      <span class="en">Things I've made, mostly born out of my own needs.</span>
+    </p>
+  </div>
+
+  <ul class="item-list">
+    {
+      works.map((work) => (
+        <li class="item">
+          <div class="item-title">
+            {work.link ? (
+              <a href={work.link} target="_blank" rel="noopener noreferrer">
+                <span class="zh">{work.zhTitle}</span>
+                <span class="en">{work.enTitle}</span>
+              </a>
+            ) : (
+              <span>
+                <span class="zh">{work.zhTitle}</span>
+                <span class="en">{work.enTitle}</span>
+              </span>
+            )}
+            <span class="item-meta">{work.year}</span>
+          </div>
+          <p class="item-desc">
+            <span class="zh">{work.zhDesc}</span>
+            <span class="en">{work.enDesc}</span>
+          </p>
+          <p class="item-tags">
+            {work.tags.map((tag) => (
+              <span class="tag">{tag}</span>
+            ))}
+          </p>
+        </li>
+      ))
+    }
+  </ul>
+</BaseLayout>
