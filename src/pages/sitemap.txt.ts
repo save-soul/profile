@@ -8,6 +8,7 @@ import { site } from '../data/site';
 const modules = import.meta.glob('./*.astro', { eager: true });
 const routes = Object.keys(modules)
   .map((f) => f.replace('./', '').replace(/\.astro$/, ''))
+  .filter((name) => name !== '404') // 404 是错误页，不应进入 sitemap
   .map((name) => (name === 'index' ? '' : name))
   .sort();
 
