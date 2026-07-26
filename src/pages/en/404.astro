@@ -1,0 +1,15 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import NotFoundView from '../../components/views/NotFoundView.astro';
+---
+
+<BaseLayout
+  title="Page not found"
+  description="Sorry, the page you’re looking for doesn’t exist."
+  active=""
+  ogImage="/og-index.png"
+  noindex={true}
+  locale="en"
+>
+  <NotFoundView locale="en" />
+</BaseLayout>

@@ -6,6 +6,7 @@ import { site } from './src/data/site';
 export default defineConfig({
   site: site.url,
   trailingSlash: 'ignore',
+  compressHTML: true,
   integrations: [sitemap()],
   markdown: {
     shikiConfig: {

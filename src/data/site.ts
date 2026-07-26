@@ -29,15 +29,19 @@ export interface SiteConfig {
   twitter: string;
   /** GitHub 主页地址（用于首页 hero 链接） */
   github: string;
+  /** 站点级关键词（中文 / 英文），用于 meta keywords 兜底 */
+  keywordsZh: string;
+  keywordsEn: string;
 }
 
 export const site: SiteConfig = {
   name: '赵文光',
   nameEn: 'Zhao Wenguang',
   url: 'https://zwg.me',
-  descriptionZh: '一个极简的个人主页 —— 记录作品、阅读、相册与日常历程。',
+  descriptionZh:
+    '赵文光的个人主页 —— 这里记录我做过的小软件作品、正在读与想读的书、旅途中的相册，以及此刻把时间花在哪里的日常历程。',
   descriptionEn:
-    'A minimal personal homepage — works, reading, photos, and a timeline of everyday moments.',
+    'Zhao Wenguang’s personal homepage — a quiet place gathering the software I’ve built, books I’m reading, travel photos, and a running timeline of where my time goes.',
   author: '赵文光',
   authorEn: 'Zhao Wenguang',
   email: 'withzeal@outlook.com',
@@ -45,5 +49,7 @@ export const site: SiteConfig = {
   locale: 'zh_CN',
   localeAlt: 'en_US',
   twitter: '',
-  github: 'https://github.com/save-soul'
+  github: 'https://github.com/save-soul',
+  keywordsZh: '赵文光, 个人主页, 作品, 阅读, 相册, 博客, 软件工程师',
+  keywordsEn: 'Zhao Wenguang, personal homepage, works, reading, photos, blog, software engineer'
 };

@@ -1,0 +1,4 @@
+# 统一到 apex 域名并通过 HTTPS 提供（Netlify 约定；其他平台请改用对应配置）
+https://www.zwg.me/* https://zwg.me/:s 301
+http://www.zwg.me/* https://zwg.me/:s 301
+http://zwg.me/* https://zwg.me/:s 301

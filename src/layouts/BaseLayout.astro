@@ -1,7 +1,7 @@
 ---
 import Nav from '../components/Nav.astro';
 import { site } from '../data/site';
-import { type Locale, localizedUrl } from '../i18n';
+import { type Locale, localizedUrl, pageMeta } from '../i18n';
 import '../styles/global.css';
 
 interface Props {
@@ -27,30 +27,111 @@ const {
   locale = 'zh',
 } = Astro.props;
 
-// 绝对地址：canonical / OG / Twitter / sitemap 都需要完整 URL
-const canonical = new URL(Astro.url.pathname, site.url).href;
-const ogImageAbs = new URL(ogImage, site.url).href;
+const siteUrl = site.url;
+const pageUrl = new URL(Astro.url.pathname, siteUrl).href;
+const ogImageAbs = new URL(ogImage, siteUrl).href;
 const fullTitle = locale === 'zh' ? `${title} · ${site.name}` : `${title} · ${site.nameEn}`;
 
 // 多语言互指 URL（绝对地址）：中文版无前缀，英文版带 /en/
-const zhUrl = new URL(localizedUrl('zh', Astro.url.pathname), site.url).href;
-const enUrl = new URL(localizedUrl('en', Astro.url.pathname), site.url).href;
+const zhUrl = new URL(localizedUrl('zh', Astro.url.pathname), siteUrl).href;
+const enUrl = new URL(localizedUrl('en', Astro.url.pathname), siteUrl).href;
 
 const ogLocale = locale === 'zh' ? site.locale : site.localeAlt;
 const ogLocaleAlt = locale === 'zh' ? site.localeAlt : site.locale;
 
-// 结构化数据：个人主页用 Person 类型，帮助搜索引擎理解作者与站点关系
+// 关键词：优先取本页 keywords，兜底用站点级
+const meta = active && pageMeta[active] ? pageMeta[active] : null;
+const keywords = meta
+  ? locale === 'zh' ? meta.keywordsZh : meta.keywordsEn
+  : locale === 'zh' ? site.keywordsZh : site.keywordsEn;
+
+// OG/Twitter 分享图替代文本
+const ogImageAlt =
+  locale === 'zh' ? `${site.name} · 个人主页分享图` : `${site.nameEn} · personal homepage card`;
+
+// robots 指令：错误页 noindex，正常页显式 index,follow 并允许大图预览
+const robotsContent = noindex ? 'noindex' : 'index,follow,max-image-preview:large,max-snippet:-1';
+
+// 结构化数据：WebSite + Person + 按页面类型 + 图片 + 面包屑，组成 @graph 增强搜索富展示
+const isHome = active === 'home' || active === '';
+const homeUrl = locale === 'zh' ? `${siteUrl}/` : `${siteUrl}/en/`;
+const langCode = locale === 'zh' ? 'zh-CN' : 'en';
+const pageTypeMap: Record<string, string> = {
+  home: 'WebPage',
+  about: 'AboutPage',
+  works: 'CollectionPage',
+  photos: 'ImageGallery',
+  reading: 'CollectionPage',
+  now: 'AboutPage',
+  notes: 'CollectionPage',
+};
+const pageType = pageTypeMap[active] || 'WebPage';
+
 const jsonLd = {
   '@context': 'https://schema.org',
-  '@type': 'Person',
-  name: site.author,
-  alternateName: site.authorEn,
-  url: site.url,
-  email: `mailto:${site.email}`,
-  image: ogImageAbs,
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': `${siteUrl}/#website`,
+      name: locale === 'zh' ? site.name : site.nameEn,
+      url: siteUrl,
+      description: locale === 'zh' ? site.descriptionZh : site.descriptionEn,
+      inLanguage: langCode,
+      publisher: { '@id': `${siteUrl}/#person` },
+    },
+    {
+      '@type': 'Person',
+      '@id': `${siteUrl}/#person`,
+      name: site.author,
+      alternateName: site.authorEn,
+      url: siteUrl,
+      email: `mailto:${site.email}`,
+      image: ogImageAbs,
+      sameAs: [site.github],
+    },
+    {
+      '@type': pageType,
+      '@id': `${pageUrl}#webpage`,
+      url: pageUrl,
+      name: fullTitle,
+      description: description,
+      inLanguage: langCode,
+      isPartOf: { '@id': `${siteUrl}/#website` },
+      primaryImageOfPage: { '@id': `${pageUrl}#primaryimage` },
+      breadcrumb: { '@id': `${pageUrl}#breadcrumb` },
+    },
+    {
+      '@type': 'ImageObject',
+      '@id': `${pageUrl}#primaryimage`,
+      url: ogImageAbs,
+      width: 1200,
+      height: 630,
+    },
+    {
+      '@type': 'BreadcrumbList',
+      '@id': `${pageUrl}#breadcrumb`,
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: locale === 'zh' ? '首页' : 'Home',
+          item: homeUrl,
+        },
+        ...(isHome
+          ? []
+          : [
+              {
+                '@type': 'ListItem',
+                position: 2,
+                name: title,
+                item: pageUrl,
+              },
+            ]),
+      ],
+    },
+  ],
 };
 ---
-
 <!doctype html>
 <html lang={locale === 'zh' ? 'zh-CN' : 'en'}>
   <head>
@@ -61,10 +142,11 @@ const jsonLd = {
     <!-- 基础 SEO -->
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
+    <link rel="canonical" href={pageUrl} />
     <meta name="theme-color" content="#ffffff" />
     <meta name="author" content={site.author} />
-    {noindex && <meta name="robots" content="noindex" />}
+    <meta name="keywords" content={keywords} />
+    <meta name="robots" content={robotsContent} />
 
     <!-- 图标：PNG 供现代浏览器，ICO 作通用回退 -->
     <link rel="icon" type="image/png" href="/favicon.png" />
@@ -75,11 +157,12 @@ const jsonLd = {
     <meta property="og:site_name" content={locale === 'zh' ? site.name : site.nameEn} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
-    <meta property="og:url" content={canonical} />
+    <meta property="og:url" content={pageUrl} />
     <meta property="og:image" content={ogImageAbs} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:alt" content={ogImageAlt} />
     <meta property="og:locale" content={ogLocale} />
     <meta property="og:locale:alternate" content={ogLocaleAlt} />
 
@@ -88,6 +171,7 @@ const jsonLd = {
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageAbs} />
+    <meta name="twitter:image:alt" content={ogImageAlt} />
     <meta name="twitter:site" content={site.twitter} />
 
     <!-- 多语言 hreflang 互指：指向「不同 URL 的语言版本」，符合 Google/Baidu 规范 -->

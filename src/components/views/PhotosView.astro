@@ -29,7 +29,14 @@ const t = (zh: string, en: string) => pick(locale, zh, en);
         role="button"
         aria-label={pick(locale, photo.zh, photo.en)}
       >
-        <img src={photo.src} alt={pick(locale, photo.zh, photo.en)} loading="lazy" />
+        <img
+          src={photo.src}
+          alt={pick(locale, photo.zh, photo.en)}
+          loading="lazy"
+          decoding="async"
+          width="800"
+          height="600"
+        />
         <div class="photo-overlay">
           <p class="overlay-title">{pick(locale, photo.zh, photo.en)}</p>
           {photo.zhDesc && (
