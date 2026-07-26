@@ -1,29 +1,32 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-
-// 双语 404：平台使用 404.html（Astro 原生输出），单页承载中英文
-const home = '/';
 ---
 
 <BaseLayout
-  title="页面未找到 · Page not found"
-  description="抱歉，你访问的页面不存在。Sorry, the page you’re looking for doesn’t exist."
+  title="页面未找到"
+  description="抱歉，你访问的页面不存在。"
   active=""
   ogImage="/og-index.png"
   noindex={true}
+  bilingualInline={true}
 >
   <section class="notfound">
     <p class="nf-code">404</p>
 
-    <h1 class="nf-title">这一页走丢了</h1>
-    <p class="nf-desc">你访问的链接可能已移动或删除。</p>
+    <h1 class="nf-title">
+      <span class="zh">这一页走丢了</span>
+      <span class="en">This page took a wrong turn</span>
+    </h1>
 
-    <p class="nf-title nf-en">This page took a wrong turn</p>
-    <p class="nf-desc nf-en">The page you’re looking for may have moved or no longer exists.</p>
+    <p class="nf-desc">
+      <span class="zh">你访问的链接可能已移动或删除。</span>
+      <span class="en">The page you’re looking for may have moved or no longer exists.</span>
+    </p>
 
-    <nav class="nf-links" aria-label="返回导航 / Back navigation">
-      <a href={home} class="nf-home">返回首页 · Back home</a>
-    </nav>
+    <a href="/" id="nf-home" class="nf-home">
+      <span class="zh">← 返回首页</span>
+      <span class="en">← Back home</span>
+    </a>
   </section>
 </BaseLayout>
 
@@ -34,7 +37,6 @@ const home = '/';
     padding-bottom: var(--sp-16);
   }
 
-  /* 大号衬线 404，呼应首页 Hero 的视觉语言 */
   .nf-code {
     font-family: var(--font-serif);
     font-size: clamp(96px, 18vw, 200px);
@@ -57,27 +59,9 @@ const home = '/';
     color: var(--ink-faint);
   }
 
-  /* 英文为次要信息：字号缩小、颜色减淡，与中文形成清晰层级 */
-  .nf-en {
-    color: var(--ink-faint);
-  }
-  .nf-title.nf-en {
-    margin-top: var(--sp-6);
-    font-size: var(--fs-20);
-    font-weight: 600;
-  }
-  .nf-desc.nf-en {
-    margin-top: var(--sp-2);
-    font-size: var(--fs-15);
-  }
-
-  .nf-links {
-    margin-top: var(--sp-10);
-  }
-
-  /* 圆角描边按钮：hover 反色，维持黑白极简语言 */
   .nf-home {
     display: inline-block;
+    margin-top: var(--sp-10);
     font-size: var(--fs-17);
     color: var(--ink);
     border: 1px solid var(--ink);
@@ -89,5 +73,16 @@ const home = '/';
     background: var(--ink);
     color: var(--paper);
     border-color: var(--ink);
+  }
+
+  /* 单页内联双语：默认显示中文，data-lang="en" 时切英文（与导航按钮联动） */
+  .en {
+    display: none;
+  }
+  :global(html[data-lang='en']) .en {
+    display: inline;
+  }
+  :global(html[data-lang='en']) .zh {
+    display: none;
   }
 </style>

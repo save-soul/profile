@@ -17,6 +17,8 @@ interface Props {
   noindex?: boolean;
   /** 当前语言：中文默认无前缀，英文带 /en/ 前缀 */
   locale?: Locale;
+  /** 单页内联双语（仅 404 用：用 data-lang 切换，不拆 /en/ URL） */
+  bilingualInline?: boolean;
 }
 const {
   title,
@@ -25,6 +27,7 @@ const {
   ogImage = site.ogImage,
   noindex = false,
   locale = 'zh',
+  bilingualInline = false,
 } = Astro.props;
 
 const siteUrl = site.url;
@@ -137,6 +140,21 @@ const jsonLd = {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- 单页内联双语（仅 404）：加载前先按偏好设定 data-lang，避免英文偏好用户闪现中文 -->
+    {
+      bilingualInline && (
+        <script is:inline>
+          (function () {
+            try {
+              if (localStorage.getItem('lang') === 'en') {
+                document.documentElement.setAttribute('data-lang', 'en');
+              }
+            } catch (e) {}
+          })();
+        </script>
+      )
+    }
     <meta name="generator" content={Astro.generator} />
 
     <!-- 基础 SEO -->
@@ -183,12 +201,41 @@ const jsonLd = {
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
   </head>
   <body>
-    <Nav active={active} locale={locale} />
+    <Nav active={active} locale={locale} bilingualInline={bilingualInline} />
     <main class="container">
       <slot />
     </main>
     <footer class="site-footer">
       <p>{locale === 'zh' ? `© 2026 ${site.name} · 用 Astro 构建` : `© 2026 ${site.nameEn} · Built with Astro`}</p>
     </footer>
+
+    <!-- 单页内联双语（仅 404）：导航语言按钮改为页面内切换 data-lang，不跳 /en/ URL -->
+    {
+      bilingualInline && (
+        <script is:inline>
+          (function () {
+            function applyLang(lang) {
+              document.documentElement.setAttribute('data-lang', lang);
+              document.documentElement.setAttribute('lang', lang === 'en' ? 'en' : 'zh-CN');
+              var btn = document.getElementById('lang-toggle-btn');
+              if (btn) btn.textContent = lang === 'en' ? '中文' : 'EN';
+              var home = document.getElementById('nf-home');
+              if (home) home.setAttribute('href', lang === 'en' ? '/en/' : '/');
+              try { localStorage.setItem('lang', lang); } catch (e) {}
+            }
+            var saved;
+            try { saved = localStorage.getItem('lang'); } catch (e) { saved = null; }
+            applyLang(saved === 'en' ? 'en' : 'zh');
+            var btn = document.getElementById('lang-toggle-btn');
+            if (btn) {
+              btn.addEventListener('click', function () {
+                var cur = document.documentElement.getAttribute('data-lang') === 'en' ? 'en' : 'zh';
+                applyLang(cur === 'en' ? 'zh' : 'en');
+              });
+            }
+          })();
+        </script>
+      )
+    }
   </body>
 </html>

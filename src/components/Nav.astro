@@ -6,8 +6,10 @@ import { type Locale, localizedUrl, otherLocale } from '../i18n';
 interface Props {
   active?: string;
   locale?: Locale;
+  /** 单页内联双语（404）：语言按钮改为页面内切换，不跳 /en/ URL */
+  bilingualInline?: boolean;
 }
-const { active = '', locale = 'zh' } = Astro.props;
+const { active = '', locale = 'zh', bilingualInline = false } = Astro.props;
 
 // 语言切换：跳转到对应语言的同一页面
 const switchUrl = localizedUrl(otherLocale(locale), Astro.url.pathname);
@@ -41,13 +43,26 @@ const prefix = locale === 'en' ? '/en' : '';
           ))
         }
       </nav>
-      <a
-        class="lang-toggle"
-        href={switchUrl}
-        aria-label={locale === 'zh' ? '切换到英文 / Switch to English' : '切换到中文 / Switch to Chinese'}
-      >
-        {locale === 'zh' ? 'EN' : '中文'}
-      </a>
+      {
+        bilingualInline ? (
+          <button
+            class="lang-toggle"
+            id="lang-toggle-btn"
+            type="button"
+            aria-label="切换语言 / Switch language"
+          >
+            EN
+          </button>
+        ) : (
+          <a
+            class="lang-toggle"
+            href={switchUrl}
+            aria-label={locale === 'zh' ? '切换到英文 / Switch to English' : '切换到中文 / Switch to Chinese'}
+          >
+            {locale === 'zh' ? 'EN' : '中文'}
+          </a>
+        )
+      }
       <button
         class="menu-toggle"
         id="menu-toggle"
