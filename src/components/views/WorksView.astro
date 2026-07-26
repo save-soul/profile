@@ -1,0 +1,42 @@
+---
+import { works } from '../../data/works';
+import { type Locale, pick } from '../../i18n';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = (zh: string, en: string) => pick(locale, zh, en);
+---
+
+<div class="page-head">
+  <h1>{t('作品', 'Works')}</h1>
+  <p class="subtitle">
+    {t('做过的一些小东西，大多源于自己的需求。', 'Things I’ve made, mostly born out of my own needs.')}
+  </p>
+</div>
+
+<ul class="item-list">
+  {
+    works.map((work) => (
+      <li class="item">
+        <div class="item-title">
+          {work.link ? (
+            <a href={work.link} target="_blank" rel="noopener noreferrer">
+              {pick(locale, work.zhTitle, work.enTitle)}
+            </a>
+          ) : (
+            <span>{pick(locale, work.zhTitle, work.enTitle)}</span>
+          )}
+          <span class="item-meta">{work.year}</span>
+        </div>
+        <p class="item-desc">{pick(locale, work.zhDesc, work.enDesc)}</p>
+        <p class="item-tags">
+          {work.tags.map((tag) => (
+            <span class="tag">{tag}</span>
+          ))}
+        </p>
+      </li>
+    ))
+  }
+</ul>

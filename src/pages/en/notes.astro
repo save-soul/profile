@@ -1,0 +1,9 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import NotesView from '../../components/views/NotesView.astro';
+import { pageMeta } from '../../i18n';
+---
+
+<BaseLayout title={pageMeta.notes.titleEn} description={pageMeta.notes.descEn} active="notes" ogImage="/og-notes.png" locale="en">
+  <NotesView locale="en" />
+</BaseLayout>

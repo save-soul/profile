@@ -1,56 +1,10 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import NowView from '../components/views/NowView.astro';
 import { Content as ZhContent } from '../content/now/zh.md';
-import { Content as EnContent } from '../content/now/en.md';
-
-// 最后更新时间 = 构建（astro build）时渲染的时刻，静态冻结；
-// dev 模式下为页面渲染时的当前时刻。固定中国标准时间 Asia/Shanghai(UTC+8)，精确到秒并注明时区。
-// 显示文本用国内外阅读习惯格式，<time datetime> 仍保留严格 ISO 8601 供机器/SEO 读取。
-const BUILT_AT = new Date();
-
-function fmtNow(locale: 'zh' | 'en'): string {
-  const dtf = new Intl.DateTimeFormat(locale === 'zh' ? 'zh-CN' : 'en-US', {
-    timeZone: 'Asia/Shanghai',
-    year: 'numeric',
-    month: locale === 'zh' ? 'numeric' : 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false,
-  });
-  const p: Record<string, string> = {};
-  for (const part of dtf.formatToParts(BUILT_AT)) p[part.type] = part.value;
-  const time = `${p.hour}:${p.minute}:${p.second}`;
-  return locale === 'zh'
-    ? `${p.year}年${p.month}月${p.day}日 ${time}（北京时间）`
-    : `${p.month} ${p.day}, ${p.year} ${time} (UTC+8)`;
-}
-const updatedZh = fmtNow('zh');
-const updatedEn = fmtNow('en');
-const updatedIso = new Intl.DateTimeFormat('sv-SE', {
-  timeZone: 'Asia/Shanghai',
-  year: 'numeric', month: '2-digit', day: '2-digit',
-  hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false,
-}).format(BUILT_AT).replace(' ', 'T') + '+08:00';
+import { pageMeta } from '../i18n';
 ---
 
-<BaseLayout title="现在" description="此刻我把时间花在哪里。" active="now" ogImage="/og-now.png">
-  <div class="page-head">
-    <h1><span class="zh">现在</span><span class="en">Now</span></h1>
-    <p class="subtitle">
-      <span class="zh">此刻我把时间花在哪里。</span>
-      <span class="en">Where my time goes right now.</span>
-    </p>
-  </div>
-
-  <div class="prose zh"><ZhContent /></div>
-  <div class="prose en"><EnContent /></div>
-
-  <p class="updated-at">
-    <span class="zh">最后更新：</span><span class="en">Last updated: </span>
-    <time datetime={updatedIso}>
-      <span class="zh">{updatedZh}</span><span class="en">{updatedEn}</span>
-    </time>
-  </p>
+<BaseLayout title={pageMeta.now.titleZh} description={pageMeta.now.descZh} active="now" ogImage="/og-now.png" locale="zh">
+  <NowView locale="zh" Content={ZhContent} />
 </BaseLayout>

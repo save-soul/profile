@@ -1,0 +1,46 @@
+---
+import { books, statusLabel } from '../../data/books';
+import { type Locale, pick } from '../../i18n';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = (zh: string, en: string) => pick(locale, zh, en);
+
+const order = { reading: 0, finished: 1, wishlist: 2 } as const;
+const sorted = [...books].sort((a, b) => order[a.status] - order[b.status]);
+---
+
+<div class="page-head">
+  <h1>{t('阅读书单', 'Reading List')}</h1>
+  <p class="subtitle">
+    {t('在读、读完与想读的书。', 'Books I’m reading, have finished, or want to read.')}
+  </p>
+</div>
+
+<ul class="item-list">
+  {
+    sorted.map((book) => (
+      <li class="item">
+        <div class="item-title">
+          {book.link ? (
+            <a href={book.link} target="_blank" rel="noopener noreferrer">
+              {pick(locale, `《${book.zhTitle}》`, book.enTitle)}
+            </a>
+          ) : (
+            <span>{pick(locale, `《${book.zhTitle}》`, book.enTitle)}</span>
+          )}
+          <span class="item-meta">{book.author}</span>
+        </div>
+        <p class="item-tags">
+          <span class="tag">{pick(locale, statusLabel[book.status].zh, statusLabel[book.status].en)}</span>
+          {book.year && <span class="item-meta">{book.year}</span>}
+        </p>
+        {(book.zhNote || book.enNote) && (
+          <p class="item-desc">{pick(locale, book.zhNote ?? '', book.enNote ?? '')}</p>
+        )}
+      </li>
+    ))
+  }
+</ul>

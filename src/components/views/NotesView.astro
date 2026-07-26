@@ -1,0 +1,28 @@
+---
+import { timeline } from '../../data/timeline';
+import { type Locale, pick } from '../../i18n';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = (zh: string, en: string) => pick(locale, zh, en);
+---
+
+<div class="page-head">
+  <h1>{t('记录', 'Notes')}</h1>
+  <p class="subtitle">
+    {t('一些值得记下的时刻与历程。', 'Moments and milestones worth noting.')}
+  </p>
+</div>
+
+<ul class="timeline">
+  {
+    timeline.map((item) => (
+      <li class="timeline-item">
+        <span class="timeline-date">{item.date}</span>
+        <p class="timeline-text">{pick(locale, item.zh, item.en)}</p>
+      </li>
+    ))
+  }
+</ul>

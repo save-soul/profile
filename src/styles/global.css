@@ -63,9 +63,7 @@ body {
   min-height: 100vh;
 }
 
-/* 双语切换：html[data-lang] 控制显隐 */
-html[data-lang="zh"] .en { display: none !important; }
-html[data-lang="en"] .zh { display: none !important; }
+/* 单语言路由：每个 URL 仅含单语正文，语言由 /en/ 前缀区分，无需 CSS 显隐 */
 
 ::selection { background: var(--ink); color: var(--paper); }
 

@@ -1,0 +1,81 @@
+---
+import { works } from '../../data/works';
+import { timeline } from '../../data/timeline';
+import { site } from '../../data/site';
+import { type Locale, pick } from '../../i18n';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = (zh: string, en: string) => pick(locale, zh, en);
+const prefix = locale === 'en' ? '/en' : '';
+const latestTimeline = timeline.slice(0, 4);
+const latestWorks = works.slice(0, 4);
+---
+
+<section class="hero">
+  <p class="eyebrow">{t('个人主页', 'Personal Homepage')}</p>
+  <h1>
+    {t('你好，欢迎来到', 'Hello, welcome to')}<br />
+    {t('我的小站。', 'my little corner.')}
+  </h1>
+  <p class="byline">{t('WithZeal · 怀着热忱', 'WithZeal · Driven by zeal')}</p>
+  <p class="intro">
+    {t(
+      '我在这里记录作品、书单、照片与日常思考。极简、黑白、留白 —— 希望你在这里能慢下来。',
+      'This is where I keep my works, reading list, photos and everyday thoughts. Minimal, monochrome, spacious — I hope it slows you down a little.'
+    )}
+  </p>
+  <div class="hero-links">
+    <a href={`${prefix}/about/`}>{t('了解我 →', 'About me →')}</a>
+    <a href={`${prefix}/now/`}>{t('我在做什么 →', 'What I’m doing →')}</a>
+    <a href={`mailto:${site.email}`}>{t('邮箱', 'Email')}</a>
+    <a href={site.github} target="_blank" rel="noopener">{t('GitHub', 'GitHub')}</a>
+  </div>
+</section>
+
+<section class="home-section">
+  <div class="sec-head">
+    <h2>{t('最近记录', 'Recent Notes')}</h2>
+    <a href={`${prefix}/notes/`}>{t('全部 →', 'All →')}</a>
+  </div>
+  <ul class="item-list">
+    {
+      latestTimeline.map((item) => (
+        <li class="item">
+          <div class="item-title">
+            <span>{pick(locale, item.zh, item.en)}</span>
+            <span class="item-meta">{item.date}</span>
+          </div>
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<section class="home-section">
+  <div class="sec-head">
+    <h2>{t('精选作品', 'Selected Works')}</h2>
+    <a href={`${prefix}/works/`}>{t('全部 →', 'All →')}</a>
+  </div>
+  <ul class="item-list">
+    {
+      latestWorks.map((work) => (
+        <li class="item">
+          <div class="item-title">
+            {work.link ? (
+              <a href={work.link} target="_blank" rel="noopener noreferrer">
+                {pick(locale, work.zhTitle, work.enTitle)}
+              </a>
+            ) : (
+              <span>{pick(locale, work.zhTitle, work.enTitle)}</span>
+            )}
+            <span class="item-meta">{work.year}</span>
+          </div>
+          <p class="item-desc">{pick(locale, work.zhDesc, work.enDesc)}</p>
+        </li>
+      ))
+    }
+  </ul>
+</section>

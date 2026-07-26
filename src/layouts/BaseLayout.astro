@@ -1,6 +1,7 @@
 ---
 import Nav from '../components/Nav.astro';
 import { site } from '../data/site';
+import { type Locale, localizedUrl } from '../i18n';
 import '../styles/global.css';
 
 interface Props {
@@ -14,14 +15,29 @@ interface Props {
   ogImage?: string;
   /** 是否禁止搜索引擎收录（如 404 等错误页应设为 true） */
   noindex?: boolean;
+  /** 当前语言：中文默认无前缀，英文带 /en/ 前缀 */
+  locale?: Locale;
 }
-
-const { title, description = site.descriptionZh, active = '', ogImage = site.ogImage, noindex = false } = Astro.props;
+const {
+  title,
+  description = site.descriptionZh,
+  active = '',
+  ogImage = site.ogImage,
+  noindex = false,
+  locale = 'zh',
+} = Astro.props;
 
 // 绝对地址：canonical / OG / Twitter / sitemap 都需要完整 URL
 const canonical = new URL(Astro.url.pathname, site.url).href;
 const ogImageAbs = new URL(ogImage, site.url).href;
-const fullTitle = `${title} · ${site.name}`;
+const fullTitle = locale === 'zh' ? `${title} · ${site.name}` : `${title} · ${site.nameEn}`;
+
+// 多语言互指 URL（绝对地址）：中文版无前缀，英文版带 /en/
+const zhUrl = new URL(localizedUrl('zh', Astro.url.pathname), site.url).href;
+const enUrl = new URL(localizedUrl('en', Astro.url.pathname), site.url).href;
+
+const ogLocale = locale === 'zh' ? site.locale : site.localeAlt;
+const ogLocaleAlt = locale === 'zh' ? site.localeAlt : site.locale;
 
 // 结构化数据：个人主页用 Person 类型，帮助搜索引擎理解作者与站点关系
 const jsonLd = {
@@ -31,12 +47,12 @@ const jsonLd = {
   alternateName: site.authorEn,
   url: site.url,
   email: `mailto:${site.email}`,
-  image: ogImageAbs
+  image: ogImageAbs,
 };
 ---
 
 <!doctype html>
-<html lang="zh-CN" data-lang="zh">
+<html lang={locale === 'zh' ? 'zh-CN' : 'en'}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -56,7 +72,7 @@ const jsonLd = {
 
     <!-- 开放图谱 Open Graph（社交分享） -->
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content={site.name} />
+    <meta property="og:site_name" content={locale === 'zh' ? site.name : site.nameEn} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
@@ -64,8 +80,8 @@ const jsonLd = {
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:type" content="image/png" />
-    <meta property="og:locale" content={site.locale} />
-    <meta property="og:locale:alternate" content={site.localeAlt} />
+    <meta property="og:locale" content={ogLocale} />
+    <meta property="og:locale:alternate" content={ogLocaleAlt} />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -74,36 +90,21 @@ const jsonLd = {
     <meta name="twitter:image" content={ogImageAbs} />
     <meta name="twitter:site" content={site.twitter} />
 
-    <!-- 多语言声明（同 URL 双语站，指向自身并声明默认） -->
-    <link rel="alternate" hreflang="zh-CN" href={canonical} />
-    <link rel="alternate" hreflang="en" href={canonical} />
-    <link rel="alternate" hreflang="x-default" href={canonical} />
+    <!-- 多语言 hreflang 互指：指向「不同 URL 的语言版本」，符合 Google/Baidu 规范 -->
+    <link rel="alternate" hreflang="zh-CN" href={zhUrl} />
+    <link rel="alternate" hreflang="en" href={enUrl} />
+    <link rel="alternate" hreflang="x-default" href={zhUrl} />
 
     <!-- 结构化数据 -->
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
-
-    <!-- 在渲染前恢复语言偏好，避免闪烁 -->
-    <script is:inline>
-      (function () {
-        var lang = 'zh';
-        try {
-          lang = localStorage.getItem('site-lang') || 'zh';
-        } catch (e) {}
-        document.documentElement.setAttribute('data-lang', lang);
-        document.documentElement.setAttribute('lang', lang === 'zh' ? 'zh-CN' : 'en');
-      })();
-    </script>
   </head>
   <body>
-    <Nav active={active} />
+    <Nav active={active} locale={locale} />
     <main class="container">
       <slot />
     </main>
     <footer class="site-footer">
-      <p>
-        <span class="zh">© 2026 {site.name} · 用 Astro 构建</span>
-        <span class="en">© 2026 {site.nameEn} · Built with Astro</span>
-      </p>
+      <p>{locale === 'zh' ? `© 2026 ${site.name} · 用 Astro 构建` : `© 2026 ${site.nameEn} · Built with Astro`}</p>
     </footer>
   </body>
 </html>

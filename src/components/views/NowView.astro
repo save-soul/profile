@@ -1,0 +1,58 @@
+---
+import { type Locale, pick } from '../../i18n';
+
+interface Props {
+  locale: Locale;
+  Content: any;
+}
+const { locale, Content } = Astro.props;
+const t = (zh: string, en: string) => pick(locale, zh, en);
+
+// 最后更新时间 = 构建（astro build）时渲染的时刻，静态冻结；
+// dev 模式下为页面渲染时的当前时刻。固定中国标准时间 Asia/Shanghai(UTC+8)，精确到秒并注明时区。
+// 显示文本用国内外阅读习惯格式，<time datetime> 仍保留严格 ISO 8601 供机器/SEO 读取。
+const BUILT_AT = new Date();
+
+function fmtUpdated(loc: Locale): string {
+  const dtf = new Intl.DateTimeFormat(loc === 'zh' ? 'zh-CN' : 'en-US', {
+    timeZone: 'Asia/Shanghai',
+    year: 'numeric',
+    month: loc === 'zh' ? 'numeric' : 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+  });
+  const p: Record<string, string> = {};
+  for (const part of dtf.formatToParts(BUILT_AT)) p[part.type] = part.value;
+  const time = `${p.hour}:${p.minute}:${p.second}`;
+  return loc === 'zh'
+    ? `${p.year}年${p.month}月${p.day}日 ${time}（北京时间）`
+    : `${p.month} ${p.day}, ${p.year} ${time} (UTC+8)`;
+}
+const updatedText = fmtUpdated(locale);
+const updatedIso =
+  new Intl.DateTimeFormat('sv-SE', {
+    timeZone: 'Asia/Shanghai',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+  }).format(BUILT_AT).replace(' ', 'T') + '+08:00';
+---
+
+<div class="page-head">
+  <h1>{t('现在', 'Now')}</h1>
+  <p class="subtitle">{t('此刻我把时间花在哪里。', 'Where my time goes right now.')}</p>
+</div>
+
+<div class="prose"><Content /></div>
+
+<p class="updated-at">
+  {t('最后更新：', 'Last updated: ')}
+  <time datetime={updatedIso}>{updatedText}</time>
+</p>

@@ -1,0 +1,10 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import NowView from '../../components/views/NowView.astro';
+import { Content as EnContent } from '../../content/now/en.md';
+import { pageMeta } from '../../i18n';
+---
+
+<BaseLayout title={pageMeta.now.titleEn} description={pageMeta.now.descEn} active="now" ogImage="/og-now.png" locale="en">
+  <NowView locale="en" Content={EnContent} />
+</BaseLayout>

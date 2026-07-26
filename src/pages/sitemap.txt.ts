@@ -3,18 +3,18 @@ import { site } from '../data/site';
 
 /**
  * 纯文本版 sitemap（Google 支持的标准格式之一）。
- * 自动扫描同目录 .astro 页面，无需手动维护路由列表。
+ * 中英文双路由：中文默认无前缀，英文带 /en/ 前缀，分别收录便于搜索引擎独立索引。
  */
-const modules = import.meta.glob('./*.astro', { eager: true });
-const routes = Object.keys(modules)
-  .map((f) => f.replace('./', '').replace(/\.astro$/, ''))
-  .filter((name) => name !== '404') // 404 是错误页，不应进入 sitemap
-  .map((name) => (name === 'index' ? '' : name))
-  .sort();
+const pages = ['', 'about', 'works', 'photos', 'reading', 'now', 'notes'];
 
 export const GET: APIRoute = () => {
   const base = site.url.replace(/\/$/, '');
-  const body = routes.map((r) => (r ? `${base}/${r}` : `${base}/`)).join('\n') + '\n';
+  const urls = pages.flatMap((p) => {
+    const zh = p === '' ? `${base}/` : `${base}/${p}/`;
+    const en = p === '' ? `${base}/en/` : `${base}/en/${p}/`;
+    return [zh, en];
+  });
+  const body = urls.join('\n') + '\n';
   return new Response(body, {
     headers: { 'Content-Type': 'text/plain; charset=utf-8' },
   });

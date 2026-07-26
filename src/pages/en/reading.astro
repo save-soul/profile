@@ -1,0 +1,9 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ReadingView from '../../components/views/ReadingView.astro';
+import { pageMeta } from '../../i18n';
+---
+
+<BaseLayout title={pageMeta.reading.titleEn} description={pageMeta.reading.descEn} active="reading" ogImage="/og-reading.png" locale="en">
+  <ReadingView locale="en" />
+</BaseLayout>

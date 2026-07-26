@@ -1,0 +1,9 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import HomeView from '../../components/views/HomeView.astro';
+import { pageMeta } from '../../i18n';
+---
+
+<BaseLayout title={pageMeta.home.titleEn} description={pageMeta.home.descEn} active="home" ogImage="/og-index.png" locale="en">
+  <HomeView locale="en" />
+</BaseLayout>

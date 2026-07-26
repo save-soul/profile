@@ -1,0 +1,9 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import WorksView from '../../components/views/WorksView.astro';
+import { pageMeta } from '../../i18n';
+---
+
+<BaseLayout title={pageMeta.works.titleEn} description={pageMeta.works.descEn} active="works" ogImage="/og-works.png" locale="en">
+  <WorksView locale="en" />
+</BaseLayout>

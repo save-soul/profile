@@ -1,0 +1,10 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import AboutView from '../../components/views/AboutView.astro';
+import { Content as EnContent } from '../../content/about/en.md';
+import { pageMeta } from '../../i18n';
+---
+
+<BaseLayout title={pageMeta.about.titleEn} description={pageMeta.about.descEn} active="about" ogImage="/og-about.png" locale="en">
+  <AboutView locale="en" Content={EnContent} />
+</BaseLayout>

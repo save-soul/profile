@@ -1,28 +1,9 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { timeline } from '../data/timeline';
+import NotesView from '../components/views/NotesView.astro';
+import { pageMeta } from '../i18n';
 ---
 
-<BaseLayout title="记录" description="一些值得记下的时刻与历程。" active="notes" ogImage="/og-notes.png">
-  <div class="page-head">
-    <h1><span class="zh">记录</span><span class="en">Notes</span></h1>
-    <p class="subtitle">
-      <span class="zh">一些值得记下的时刻与历程。</span>
-      <span class="en">Moments and milestones worth noting.</span>
-    </p>
-  </div>
-
-  <ul class="timeline">
-    {
-      timeline.map((item) => (
-        <li class="timeline-item">
-          <span class="timeline-date">{item.date}</span>
-          <p class="timeline-text">
-            <span class="zh">{item.zh}</span>
-            <span class="en">{item.en}</span>
-          </p>
-        </li>
-      ))
-    }
-  </ul>
+<BaseLayout title={pageMeta.notes.titleZh} description={pageMeta.notes.descZh} active="notes" ogImage="/og-notes.png" locale="zh">
+  <NotesView locale="zh" />
 </BaseLayout>

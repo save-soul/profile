@@ -1,0 +1,17 @@
+---
+import { type Locale, pick } from '../../i18n';
+
+interface Props {
+  locale: Locale;
+  Content: any;
+}
+const { locale, Content } = Astro.props;
+const t = (zh: string, en: string) => pick(locale, zh, en);
+---
+
+<div class="page-head">
+  <h1>{t('关于', 'About')}</h1>
+  <p class="subtitle">{t('作者简历。', 'The author’s résumé.')}</p>
+</div>
+
+<div class="prose"><Content /></div>

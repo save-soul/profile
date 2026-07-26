@@ -1,0 +1,9 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PhotosView from '../../components/views/PhotosView.astro';
+import { pageMeta } from '../../i18n';
+---
+
+<BaseLayout title={pageMeta.photos.titleEn} description={pageMeta.photos.descEn} active="photos" ogImage="/og-photos.png" locale="en">
+  <PhotosView locale="en" />
+</BaseLayout>
