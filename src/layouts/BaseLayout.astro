@@ -206,7 +206,14 @@ const jsonLd = {
       <slot />
     </main>
     <footer class="site-footer">
-      <p>{locale === 'zh' ? `© 2026 ${site.name} · 用 Astro 构建` : `© 2026 ${site.nameEn} · Built with Astro`}</p>
+      <p>
+        {bilingualInline ? (
+          <>
+            <span class="zh">© 2026 {site.name} · 用 Astro 构建</span>
+            <span class="en">© 2026 {site.nameEn} · Built with Astro</span>
+          </>
+        ) : locale === 'zh' ? `© 2026 ${site.name} · 用 Astro 构建` : `© 2026 ${site.nameEn} · Built with Astro`}
+      </p>
     </footer>
 
     <!-- 单页内联双语（仅 404）：导航语言按钮改为页面内切换 data-lang，不跳 /en/ URL -->
@@ -221,6 +228,10 @@ const jsonLd = {
               if (btn) btn.textContent = lang === 'en' ? '中文' : 'EN';
               var home = document.getElementById('nf-home');
               if (home) home.setAttribute('href', lang === 'en' ? '/en/' : '/');
+              var logo = document.getElementById('site-logo');
+              if (logo) logo.setAttribute('href', lang === 'en' ? '/en/' : '/');
+              var menu = document.getElementById('menu-toggle');
+              if (menu) menu.setAttribute('aria-label', lang === 'en' ? 'Menu / 菜单' : '菜单 / Menu');
               try { localStorage.setItem('lang', lang); } catch (e) {}
             }
             var saved;

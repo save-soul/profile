@@ -696,3 +696,9 @@ main.container {
     scroll-behavior: auto !important;
   }
 }
+
+/* 单页内联双语（仅 404 页启用）：默认显示中文，data-lang="en" 时切英文。
+   全局生效，使导航、页脚、正文等跨组件内容联动切换。普通页面无 .zh/.en 元素，故无副作用。 */
+.en { display: none; }
+html[data-lang='en'] .zh { display: none; }
+html[data-lang='en'] .en { display: inline; }

@@ -74,15 +74,4 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     color: var(--paper);
     border-color: var(--ink);
   }
-
-  /* 单页内联双语：默认显示中文，data-lang="en" 时切英文（与导航按钮联动） */
-  .en {
-    display: none;
-  }
-  :global(html[data-lang='en']) .en {
-    display: inline;
-  }
-  :global(html[data-lang='en']) .zh {
-    display: none;
-  }
 </style>

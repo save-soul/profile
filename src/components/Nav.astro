@@ -19,8 +19,13 @@ const prefix = locale === 'en' ? '/en' : '';
 
 <header class="site-header">
   <div class="header-inner">
-    <a href={locale === 'en' ? '/en/' : '/'} class="site-logo">
-      {locale === 'zh' ? site.name : site.nameEn}
+    <a href={locale === 'en' ? '/en/' : '/'} class="site-logo" id="site-logo">
+      {bilingualInline ? (
+        <>
+          <span class="zh">{site.name}</span>
+          <span class="en">{site.nameEn}</span>
+        </>
+      ) : locale === 'zh' ? site.name : site.nameEn}
     </a>
     <div class="nav-wrap">
       <nav class="site-nav" id="site-nav" aria-label="主导航">
@@ -33,7 +38,12 @@ const prefix = locale === 'en' ? '/en' : '';
                 ? { target: '_blank', rel: 'noopener noreferrer' }
                 : {})}
             >
-              {locale === 'zh' ? link.zh : link.en}
+              {bilingualInline ? (
+                <>
+                  <span class="zh">{link.zh}</span>
+                  <span class="en">{link.en}</span>
+                </>
+              ) : locale === 'zh' ? link.zh : link.en}
               {link.external && (
                 <span class="ext" aria-hidden="true">
                   ↗
