@@ -21,7 +21,7 @@ export const navLinks: NavLink[] = [
   { key: 'photos', href: '/photos/', zh: '相册', en: 'Photos' },
   { key: 'notes', href: '/notes/', zh: '记录', en: 'Notes' },
   { key: 'now', href: '/now/', zh: '现在', en: 'Now' },
-  { key: 'about', href: '/about/', zh: '关于', en: 'About' }
+  { key: 'about', href: '/about/', zh: '关于', en: 'About' },
   // 外站示例（取消注释并改成你的地址即可）：
-  // { key: 'blog', href: 'https://blog.example.com', zh: '博客', en: 'Blog', external: true }
+  { key: 'blog', href: 'https://likeit.dev', zh: '博客', en: 'Blog', external: true }
 ];

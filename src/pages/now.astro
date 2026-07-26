@@ -4,24 +4,35 @@ import { Content as ZhContent } from '../content/now/zh.md';
 import { Content as EnContent } from '../content/now/en.md';
 
 // 最后更新时间 = 构建（astro build）时渲染的时刻，静态冻结；
-// dev 模式下为页面渲染时的当前时刻。
-// 格式：ISO 8601 扩展（YYYY-MM-DD HH:mm:ss +08:00），固定中国标准时间
-// Asia/Shanghai(UTC+8)，精确到秒并注明时区。
-function fmtNow(d: Date): string {
-  const s = new Intl.DateTimeFormat('sv-SE', {
+// dev 模式下为页面渲染时的当前时刻。固定中国标准时间 Asia/Shanghai(UTC+8)，精确到秒并注明时区。
+// 显示文本用国内外阅读习惯格式，<time datetime> 仍保留严格 ISO 8601 供机器/SEO 读取。
+const BUILT_AT = new Date();
+
+function fmtNow(locale: 'zh' | 'en'): string {
+  const dtf = new Intl.DateTimeFormat(locale === 'zh' ? 'zh-CN' : 'en-US', {
     timeZone: 'Asia/Shanghai',
     year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
+    month: locale === 'zh' ? 'numeric' : 'long',
+    day: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit',
     hour12: false,
-  }).format(d);
-  return `${s} +08:00`;
+  });
+  const p: Record<string, string> = {};
+  for (const part of dtf.formatToParts(BUILT_AT)) p[part.type] = part.value;
+  const time = `${p.hour}:${p.minute}:${p.second}`;
+  return locale === 'zh'
+    ? `${p.year}年${p.month}月${p.day}日 ${time}（北京时间）`
+    : `${p.month} ${p.day}, ${p.year} ${time} (UTC+8)`;
 }
-const updatedAt = fmtNow(new Date());
-const updatedIso = updatedAt.replace(' ', 'T'); // 严格 ISO 8601（带 T）供 <time datetime>
+const updatedZh = fmtNow('zh');
+const updatedEn = fmtNow('en');
+const updatedIso = new Intl.DateTimeFormat('sv-SE', {
+  timeZone: 'Asia/Shanghai',
+  year: 'numeric', month: '2-digit', day: '2-digit',
+  hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false,
+}).format(BUILT_AT).replace(' ', 'T') + '+08:00';
 ---
 
 <BaseLayout title="现在" description="此刻我把时间花在哪里。" active="now" ogImage="/og-now.png">
@@ -38,6 +49,8 @@ const updatedIso = updatedAt.replace(' ', 'T'); // 严格 ISO 8601（带 T）供
 
   <p class="updated-at">
     <span class="zh">最后更新：</span><span class="en">Last updated: </span>
-    <time datetime={updatedIso}>{updatedAt}</time>
+    <time datetime={updatedIso}>
+      <span class="zh">{updatedZh}</span><span class="en">{updatedEn}</span>
+    </time>
   </p>
 </BaseLayout>
