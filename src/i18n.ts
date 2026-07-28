@@ -41,8 +41,8 @@ export interface PageMeta {
 
 export const pageMeta: Record<string, PageMeta> = {
   home: {
-    titleZh: '首页',
-    titleEn: 'Home',
+    titleZh: '赵文光的个人主页：软件作品、阅读与旅行相册',
+    titleEn: "Zhao Wenguang — works, reading & travel",
     descZh:
       '欢迎来到我的个人主页。这里汇集了我的软件作品、阅读书单、旅行相册，以及记录日常此刻的「现在」页面。',
     descEn:
@@ -51,8 +51,8 @@ export const pageMeta: Record<string, PageMeta> = {
     keywordsEn: 'Zhao Wenguang, personal homepage, works, reading, photos, now, notes',
   },
   about: {
-    titleZh: '关于我',
-    titleEn: 'About',
+    titleZh: '赵文光的简历：教育背景、工作经历与技能栈介绍',
+    titleEn: "Zhao Wenguang's résumé: education & skills",
     descZh:
       '关于赵文光：一份简洁的简历，涵盖教育背景、工作经历、技能栈与联系方式，帮你快速了解我是谁、能做什么。',
     descEn:
@@ -61,8 +61,8 @@ export const pageMeta: Record<string, PageMeta> = {
     keywordsEn: 'Zhao Wenguang, résumé, about, skills, contact, engineer',
   },
   works: {
-    titleZh: '作品集',
-    titleEn: 'Works',
+    titleZh: '赵文光开发的软件作品集：工具、脚本与实验项目',
+    titleEn: "Zhao Wenguang's works: tools & experiments",
     descZh:
       '我做过的一些小作品，大多源于自己的真实需求：工具、脚本与实验性项目，附上简介、技术栈与链接。',
     descEn:
@@ -71,8 +71,8 @@ export const pageMeta: Record<string, PageMeta> = {
     keywordsEn: 'works, projects, open source, tools, software, experiments',
   },
   photos: {
-    titleZh: '相册',
-    titleEn: 'Photos',
+    titleZh: '赵文光的旅行与生活在途摄影相册，定格光影瞬间',
+    titleEn: "Zhao Wenguang's photo gallery: travel & life",
     descZh:
       '旅途与生活中的片刻集合。悬停查看拍摄信息与说明，点击可放大查看大图，记录光影里的寻常瞬间。',
     descEn:
@@ -81,8 +81,8 @@ export const pageMeta: Record<string, PageMeta> = {
     keywordsEn: 'photos, photography, travel, gallery, moments',
   },
   reading: {
-    titleZh: '阅读书单',
-    titleEn: 'Reading List',
+    titleZh: '赵文光的阅读书单：在读、已读与想读的好书推荐',
+    titleEn: "Zhao Wenguang's reading list: books & notes",
     descZh: '我的阅读书单：正在读、已经读完，以及排在清单里想读的书，附上简短的感想与评分。',
     descEn:
       'My reading list — what I’m reading, what I’ve finished, and what’s queued up next, with brief notes and ratings.',
@@ -90,8 +90,8 @@ export const pageMeta: Record<string, PageMeta> = {
     keywordsEn: 'reading, book list, books, notes, recommendations',
   },
   now: {
-    titleZh: '现在',
-    titleEn: 'Now',
+    titleZh: '赵文光的现在页面：此刻把时间花在哪、关注什么',
+    titleEn: "Zhao Wenguang's Now page: time & focus",
     descZh:
       '现在（Now）页面：记录此刻我把时间花在哪里、最近在关注什么，以及正在进行的事，随构建时间更新。',
     descEn:
@@ -100,8 +100,8 @@ export const pageMeta: Record<string, PageMeta> = {
     keywordsEn: 'now, currently, status, focus',
   },
   notes: {
-    titleZh: '记录',
-    titleEn: 'Notes',
+    titleZh: '赵文光的记录：项目节点与生活片段的时间轴日志',
+    titleEn: "Zhao Wenguang's notes: project & life log",
     descZh: '一些值得记下的时刻与历程：从项目节点到生活片段，按时间倒序排列的轻松记录。',
     descEn:
       'Moments and milestones worth noting — from project checkpoints to life snippets, listed newest first.',
